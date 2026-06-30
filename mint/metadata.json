@@ -1,0 +1,14 @@
+{
+    "name": "ShilalArt42 #1",
+    "description": "A kawaii Pikachu surrounded by cherry blossoms, roses, and pink ribbons, with the number 42 on a glittery pink lightning bolt. Created for the 42 TokenizeArt project.",
+    "image": "ipfs://bafybeicvjcxbz7bol5rflmwmkoytq5qqab4nlznx47eggj6w4wkayatrdy",
+    "artist": "shilal",
+    "attributes": [
+      { "trait_type": "Project", "value": "TokenizeArt" },
+      { "trait_type": "Network", "value": "Sepolia" },
+      { "trait_type": "Theme", "value": "Kawaii Pikachu" },
+      { "trait_type": "Style", "value": "Girly" },
+      { "trait_type": "Background", "value": "Cherry Blossom" },
+      { "trait_type": "Special", "value": "Flower Crown" }
+    ]
+}
