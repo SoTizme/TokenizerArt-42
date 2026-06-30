@@ -93,7 +93,7 @@ ownerOf(0)
 This returns the wallet address that currently owns token ID 0.
 
 ### View the artwork
-Take the `tokenURI` result, replace `ipfs://` with `https://ipfs.io/ipfs/` and open it in a browser to see the metadata JSON, which links to the actual image.
+Take the `tokenURI` result, replace `ipfs://` with `https://gateway.pinata.cloud/ipfs/` and open it in a browser to see the metadata JSON, which links to the actual image.
 
 ---
 

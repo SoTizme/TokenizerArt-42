@@ -53,6 +53,6 @@ shilal_nft42.png          ← original NFT image
 | Symbol            | SNFT42                               |
 | Standard          | ERC-721                              |
 | Network           | Ethereum Sepolia testnet             |
-| Contract address  | *(see deployment/how_to_deploy.md)*  |
+| Contract address  | 0xeD8D4EBA286049A9fcFDdfC817676624c63aaEAA  |
 | Artist / login    | shilal                               |
 | Image storage     | IPFS                                 |

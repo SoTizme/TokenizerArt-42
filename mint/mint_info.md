@@ -12,8 +12,8 @@ The image used for this NFT contains the number **42**, as required.
 |----------------|-----------------------------------------|
 | File name      | `shilal_nft42.png` (example)            |
 | IPFS hash      | *(fill in after upload)*                |
-| IPFS link      | `ipfs://<your-image-CID>`               |
-| Gateway link   | `https://ipfs.io/ipfs/<your-image-CID>` |
+| IPFS link      | `ipfs://bafybeicvjcxbz7bol5rflmwmkoytq5qqab4nlznx47eggj6w4wkayatrdy`               |
+| Gateway link   | `https://gateway.pinata.cloud/ipfs/bafybeicvjcxbz7bol5rflmwmkoytq5qqab4nlznx47eggj6w4wkayatrdy` |
 
 ---
 
@@ -21,33 +21,15 @@ The image used for this NFT contains the number **42**, as required.
 
 The metadata file describes the NFT and is also uploaded to IPFS. It must include the artist's name (your 42 login) and a title containing "42".
 
-Example `metadata.json`:
+Example `./metadata.json`:
 
-```json
-{
-  "name": "ShilalArt42 #1",
-  "description": "An original digital artwork created for the 42 TokenizeArt project.",
-  "image": "ipfs://<your-image-CID>",
-  "artist": "shilal",
-  "attributes": [
-    {
-      "trait_type": "Project",
-      "value": "TokenizeArt"
-    },
-    {
-      "trait_type": "Network",
-      "value": "Sepolia"
-    }
-  ]
-}
-```
 
 | Field          | Value                                     |
 |----------------|---------------------------------------------|
 | Metadata file  | `metadata.json`                            |
 | IPFS hash      | *(fill in after upload)*                   |
 | IPFS link      | `ipfs://bafkreicyilrbckkxywftgb4zfaari43nulqgigs65afc5wqej5dcmg55va`               |
-| Gateway link   | `https://ipfs.io/ipfs/bafkreicyilrbckkxywftgb4zfaari43nulqgigs65afc5wqej5dcmg55va` |
+| Gateway link   | `https://gateway.pinata.cloud/ipfs/bafkreicyilrbckkxywftgb4zfaari43nulqgigs65afc5wqej5dcmg55va` |
 
 ---
 
