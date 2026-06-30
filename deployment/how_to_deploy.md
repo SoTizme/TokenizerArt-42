@@ -70,17 +70,17 @@ You need test ETH to pay for gas fees when deploying. It is completely free.
 
 1. Go to [https://remix.ethereum.org](https://remix.ethereum.org)
 2. In the left panel, under **File Explorer**, Inside the `contracts` folder click the **new file** icon
-3. Name the file `ShilalToken42.sol`
-4. Paste the full contract code from the `code/ShilalToken42.sol` file in this repository
+3. Name the file `ShilalNFT42.sol`
+4. Paste the full contract code from the `code/ShilalNFT42.sol` file in this repository
 
 ---
 
 ## Step 5 — Compile the contract
 
 1. Click the **Solidity Compiler** tab on the left (icon looks like an "S")
-2. Set the compiler version to **0.8.20**
+2. Set the compiler version to **0.8.34**
 3. Check **Enable optimization** (leave runs at 200)
-4. Click **Compile ShilalToken42.sol**
+4. Click **Compile ShilalNFT42.sol**
 5. You should see a green checkmark — no errors, only a possible SPDX warning which is harmless
 
 ---
@@ -97,7 +97,7 @@ Your contract lives permanently on Sepolia. To reconnect instead of deploying ag
 
 ---
 
-## Step 3 — Verify your NFT
+## Step 7 — Verify your NFT
 
 In Remix, under your deployed contract:
 
@@ -105,11 +105,9 @@ In Remix, under your deployed contract:
 - `tokenURI(0)` → should return `ipfs://bafkreicyilrbckkxywftgb4zfaari43nulqgigs65afc5wqej5dcmg55va`
 - `balanceOf(yourAddress)` → should return `1`
 
-Or Etherscan:
-
 ---
 
-## Step 7 — View the actual artwork
+## Step 8 — View the actual artwork
 
 Take your metadata IPFS link and open it through a public gateway in your browser:
 
@@ -129,5 +127,4 @@ https://gateway.pinata.cloud/ipfs/bafybeicvjcxbz7bol5rflmwmkoytq5qqab4nlznx47egg
 
 - **Never use real ETH** — Sepolia testnet only
 - **IPFS links are permanent** as long as at least one node keeps hosting the file (service Pinata handle this automatically)
-- The contract address and network are saved in `deployment/deploy_info.md`
 - Minting details (token ID, IPFS links) are saved in `mint/mint_info.md`

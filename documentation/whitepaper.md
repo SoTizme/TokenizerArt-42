@@ -19,16 +19,6 @@
 
 ---
 
-## What makes an NFT different from a regular token
-
-Unlike ERC-20 tokens (where every unit is identical and interchangeable, like currency), each ERC-721 NFT is unique:
-
-- Every NFT has its own `tokenId` (0, 1, 2, ...)
-- Every NFT can have its own metadata (image, name, description)
-- NFTs cannot be split into smaller amounts — you own one whole NFT or none
-
----
-
 ## Smart contract architecture
 
 The contract inherits from three OpenZeppelin base contracts:
@@ -108,7 +98,7 @@ Take the `tokenURI` result, replace `ipfs://` with `https://gateway.pinata.cloud
 
 ## Dependencies
 
-- Solidity `^0.8.20`
+- Solidity `^0.8.34`
 - OpenZeppelin Contracts `v5.x`
   - `@openzeppelin/contracts/token/ERC721/ERC721.sol`
   - `@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol`

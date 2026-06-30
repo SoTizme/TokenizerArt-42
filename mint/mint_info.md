@@ -10,7 +10,7 @@ The image used for this NFT contains the number **42**, as required.
 
 | Field          | Value                                  |
 |----------------|-----------------------------------------|
-| File name      | `shilal_nft42.png` (example)            |
+| File name      | `shilal_nft42.png`                      |
 | IPFS hash      | *(fill in after upload)*                |
 | IPFS link      | `ipfs://bafybeicvjcxbz7bol5rflmwmkoytq5qqab4nlznx47eggj6w4wkayatrdy`               |
 | Gateway link   | `https://gateway.pinata.cloud/ipfs/bafybeicvjcxbz7bol5rflmwmkoytq5qqab4nlznx47eggj6w4wkayatrdy` |
@@ -21,7 +21,7 @@ The image used for this NFT contains the number **42**, as required.
 
 The metadata file describes the NFT and is also uploaded to IPFS. It must include the artist's name (your 42 login) and a title containing "42".
 
-Example `./metadata.json`:
+`./metadata.json`:
 
 
 | Field          | Value                                     |
@@ -37,7 +37,7 @@ Example `./metadata.json`:
 
 Once both the image and metadata are uploaded to IPFS:
 
-1. Open Remix → connect to your deployed `ShilalNFT42` contract (see `deployment/deploy_info.md`)
+1. Open Remix → connect to your deployed `ShilalNFT42` contract (see `deployment/how_to_deploy.md`)
 2. Find the orange function **`safeMint`**
 3. Fill in the inputs:
    ```
@@ -49,18 +49,8 @@ Once both the image and metadata are uploaded to IPFS:
 
 ---
 
-## 4. Minted token details (fill in after minting)
 
-| Field             | Value                              |
-|-------------------|--------------------------------------|
-| Token ID          | `0` (first NFT minted starts at 0) |
-| Owner address     | *(your wallet address)*            |
-| Transaction hash  | *(fill in after minting)*          |
-| Etherscan link    | *(fill in after minting)*          |
-
----
-
-## 5. Verifying ownership
+## 4. Verifying ownership
 
 In Remix, under your deployed contract:
 

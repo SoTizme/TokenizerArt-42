@@ -12,7 +12,7 @@ I reused the same platform as my previous Tokenizer project for consistency, too
 ### Token standard — ERC-721
 ERC-721 is the standard for non-fungible tokens on Ethereum. Unlike ERC-20, each token has a unique ID and its own metadata, making it suitable for representing one-of-a-kind digital assets like artwork.
 
-### Language — Solidity 0.8.20
+### Language — Solidity 0.8.34
 Includes built-in overflow protection.
 
 ### Framework — OpenZeppelin + Remix IDE
@@ -31,16 +31,16 @@ The NFT image and its metadata JSON file are stored on IPFS (InterPlanetary File
 ## Repository structure
 ```
 README.md
-code/
-ShilalNFT42.sol      ← smart contract source
-deployment/
-how_to_deploy.md     ← step-by-step deployment guide + contract address
-mint/
-metadata.json        ← final NFT metadata
-mint_info.md         ← minting steps, IPFS links, minted token details
-documentation/
-whitepaper.md        ← NFT overview and architecture
 shilal_nft42.png          ← original NFT image
+code/
+    ShilalNFT42.sol      ← smart contract source
+deployment/
+    how_to_deploy.md     ← step-by-step deployment guide + contract address
+mint/
+    metadata.json        ← final NFT metadata
+    mint_info.md         ← minting steps, IPFS links, minted token details
+documentation/
+    whitepaper.md        ← NFT overview and architecture
 ```
 
 ---

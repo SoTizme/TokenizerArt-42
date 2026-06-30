@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ShilalNFT42 — Mint</title>
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --panel: #141414;
+    --border: #262626;
+    --text: #f5f5f5;
+    --muted: #8a8a8a;
+    --accent: #bcd9e8;
+    --error: #e8a0a0;
+    --success: #bce8c8;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    display: flex;
+    justify-content: center;
+    padding: 48px 20px 80px;
+  }
+
+  main { width: 100%; max-width: 560px; }
+
+  header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 36px;
+  }
+
+  header svg { flex-shrink: 0; }
+
+  h1 {
+    font-size: 22px;
+    margin: 0;
+    letter-spacing: 0.02em;
+  }
+
+  .subtitle {
+    margin: 2px 0 0;
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 22px;
+    margin-bottom: 20px;
+  }
+
+  .panel h2 {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin: 0 0 16px;
+  }
+
+  label {
+    display: block;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  input[type="text"], input[type="number"] {
+    width: 100%;
+    background: #0a0a0a;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--text);
+    padding: 10px 12px;
+    font-family: ui-monospace, "JetBrains Mono", Consolas, monospace;
+    font-size: 13px;
+    margin-bottom: 14px;
+  }
+
+  input:focus { outline: 1px solid var(--accent); border-color: var(--accent); }
+
+  button {
+    background: var(--accent);
+    color: #0a0a0a;
+    border: none;
+    border-radius: 3px;
+    padding: 10px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  button:disabled { opacity: 0.5; cursor: default; }
+  button:not(:disabled):hover { filter: brightness(1.08); }
+
+  .row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+
+  .mono { font-family: ui-monospace, "JetBrains Mono", Consolas, monospace; font-size: 13px; }
+
+  .muted { color: var(--muted); }
+
+  .status { margin-top: 12px; font-size: 13px; word-break: break-word; }
+  .status.pending { color: var(--accent); }
+  .status.success { color: var(--success); }
+  .status.error { color: var(--error); }
+
+  .hint { font-size: 12px; color: var(--muted); margin: -8px 0 14px; }
+
+  .nft-image {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    margin-bottom: 14px;
+  }
+
+  .result h3 { margin: 0 0 4px; font-size: 16px; }
+  .result p { margin: 0 0 10px; font-size: 13px; }
+
+  .attributes {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .attributes li { font-size: 13px; }
+  .attributes .muted { display: inline-block; width: 130px; }
+</style>
+</head>
+<body>
+<main>
+
+  <header>
+    <svg width="34" height="34" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="20,10 80,30 60,90 30,70" fill="#1c1c1c" />
+      <polygon points="55,45 80,30 60,90" fill="#bcd9e8" opacity="0.85" />
+      <polygon points="20,10 55,45 30,70" fill="#2a2a2a" />
+    </svg>
+    <div>
+      <h1>ShilalNFT42</h1>
+      <p class="subtitle">On-chain mint &middot; Sepolia testnet</p>
+    </div>
+  </header>
+
+  <!-- Wallet + contract setup -->
+  <section class="panel">
+    <h2>Wallet</h2>
+    <label for="contractAddress">Contract address (Sepolia)</label>
+    <input type="text" id="contractAddress" placeholder="0x..." />
+    <div class="row">
+      <button id="connectBtn">Connect Wallet</button>
+      <span class="mono muted" id="walletAddress"></span>
+    </div>
+    <div class="status" id="walletStatus"></div>
+  </section>
+
+  <!-- Mint -->
+  <section class="panel">
+    <h2>Mint</h2>
+    <p class="hint">Owner-only contract — the transaction only succeeds when connected with the deployer wallet.</p>
+    <label for="recipientAddress">Recipient address</label>
+    <input type="text" id="recipientAddress" placeholder="0x..." />
+    <button id="mintBtn">Mint</button>
+    <div class="status" id="mintStatus"></div>
+  </section>
+
+  <!-- View token -->
+  <section class="panel">
+    <h2>View token</h2>
+    <label for="tokenIdInput">Token ID</label>
+    <input type="number" id="tokenIdInput" placeholder="0" min="0" />
+    <button id="lookupBtn">Look Up</button>
+    <div class="status" id="viewStatus"></div>
+    <div class="result" id="viewResult"></div>
+  </section>
+
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.15.0/ethers.umd.min.js"></script>
+<script>
+  // ABI fragment matching ShilalNFT42Onchain.sol
+  const ABI = [
+    "function safeMint(address to) external returns (uint256)",
+    "function tokenURI(uint256 tokenId) public view returns (string)",
+    "function ownerOf(uint256 tokenId) public view returns (address)",
+    "function totalMinted() external view returns (uint256)"
+  ];
+
+  const SEPOLIA_CHAIN_ID_HEX = "0xaa36a7";
+
+  let provider = null;
+  let signer = null;
+  let connectedAddress = null;
+
+  const $ = (id) => document.getElementById(id);
+
+  function setStatus(el, message, type) {
+    el.textContent = message;
+    el.className = "status " + (type || "");
+  }
+
+  function getContractAddress() {
+    const address = $("contractAddress").value.trim();
+    if (!address) throw new Error("Paste the deployed contract address first.");
+    return address;
+  }
+
+  function getContract(withSigner) {
+    const address = getContractAddress();
+    if (withSigner) {
+      if (!signer) throw new Error("Connect your wallet first.");
+      return new ethers.Contract(address, ABI, signer);
+    }
+    if (!provider) throw new Error("No wallet provider available.");
+    return new ethers.Contract(address, ABI, provider);
+  }
+
+  async function connectWallet() {
+    if (!window.ethereum) {
+      setStatus($("walletStatus"), "No wallet found. Install MetaMask to continue.", "error");
+      return;
+    }
+    try {
+      provider = new ethers.BrowserProvider(window.ethereum);
+      await provider.send("eth_requestAccounts", []);
+      signer = await provider.getSigner();
+      connectedAddress = await signer.getAddress();
+
+      const network = await provider.getNetwork();
+      const chainIdHex = "0x" + network.chainId.toString(16);
+      if (chainIdHex !== SEPOLIA_CHAIN_ID_HEX) {
+        try {
+          await window.ethereum.request({
+            method: "wallet_switchEthereumChain",
+            params: [{ chainId: SEPOLIA_CHAIN_ID_HEX }]
+          });
+        } catch (switchErr) {
+          setStatus($("walletStatus"), "Please switch your wallet to the Sepolia testnet and reconnect.", "error");
+          return;
+        }
+      }
+
+      $("walletAddress").textContent = connectedAddress;
+      $("recipientAddress").value = connectedAddress;
+      setStatus($("walletStatus"), "Connected.", "success");
+      $("connectBtn").textContent = "Connected";
+      $("connectBtn").disabled = true;
+    } catch (err) {
+      setStatus($("walletStatus"), "Connection failed: " + (err.message || err), "error");
+    }
+  }
+
+  async function mint() {
+    const statusEl = $("mintStatus");
+    try {
+      const to = $("recipientAddress").value.trim();
+      if (!ethers.isAddress(to)) {
+        setStatus(statusEl, "Enter a valid recipient address.", "error");
+        return;
+      }
+      const contract = getContract(true);
+      setStatus(statusEl, "Confirm the transaction in your wallet…", "pending");
+      const tx = await contract.safeMint(to);
+      setStatus(statusEl, "Minting… tx " + tx.hash, "pending");
+      const receipt = await tx.wait();
+      const totalMinted = await contract.totalMinted();
+      const tokenId = totalMinted - 1n;
+      setStatus(
+        statusEl,
+        "Minted token #" + tokenId.toString() +
+          ". https://sepolia.etherscan.io/tx/" + receipt.hash,
+        "success"
+      );
+    } catch (err) {
+      const reason = err.reason || err.shortMessage || err.message || String(err);
+      setStatus(statusEl, "Mint failed: " + reason, "error");
+    }
+  }
+
+  async function lookupToken() {
+    const statusEl = $("viewStatus");
+    const resultEl = $("viewResult");
+    resultEl.innerHTML = "";
+    try {
+      const tokenIdInput = $("tokenIdInput").value.trim();
+      if (tokenIdInput === "") {
+        setStatus(statusEl, "Enter a token ID.", "error");
+        return;
+      }
+      if (!provider) {
+        if (!window.ethereum) {
+          setStatus(statusEl, "No wallet found. Install MetaMask to continue.", "error");
+          return;
+        }
+        provider = new ethers.BrowserProvider(window.ethereum);
+      }
+      const contract = getContract(false);
+      setStatus(statusEl, "Fetching…", "pending");
+
+      const [uri, owner] = await Promise.all([
+        contract.tokenURI(tokenIdInput),
+        contract.ownerOf(tokenIdInput)
+      ]);
+
+      const jsonBase64 = uri.replace("data:application/json;base64,", "");
+      const metadata = JSON.parse(atob(jsonBase64));
+
+      const attributesHtml = (metadata.attributes || [])
+        .map((a) => `<li><span class="muted">${a.trait_type}</span>${a.value}</li>`)
+        .join("");
+
+      resultEl.innerHTML = `
+        <img class="nft-image" src="${metadata.image}" alt="${metadata.name}" />
+        <h3>${metadata.name}</h3>
+        <p class="muted">${metadata.description}</p>
+        <p class="mono">Owner: ${owner}</p>
+        <ul class="attributes">${attributesHtml}</ul>
+      `;
+      setStatus(statusEl, "Loaded.", "success");
+    } catch (err) {
+      const reason = err.reason || err.shortMessage || err.message || String(err);
+      setStatus(statusEl, "Lookup failed: " + reason, "error");
+    }
+  }
+
+  $("connectBtn").addEventListener("click", connectWallet);
+  $("mintBtn").addEventListener("click", mint);
+  $("lookupBtn").addEventListener("click", lookupToken);
+</script>
+</body>
+</html>
