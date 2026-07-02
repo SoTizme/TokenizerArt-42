@@ -5,6 +5,35 @@ Documentation for the bonus part of the **42 TokenizeArt** project: on-chain met
 
 ---
 
+## Contract info
+
+| Field             | Value                              |
+|-------------------|--------------------------------------|
+| Collection name   | ShilalNFT42Onchain                   |
+| Symbol            | SNFT42B                              |
+| Standard          | ERC-721                              |
+| Network           | Ethereum Sepolia testnet             |
+| Contract address  | 0xb9fFC94D4E517730d2Ae0312D41Cc2DFbDAd82F5           |
+| Artist / login    | shilal                               |
+| Image storage     | Fully on-chain (SVG, base64-encoded) |
+| Metadata storage  | Fully on-chain (JSON, base64-encoded)|
+
+---
+
+## Repository structure (bonus)
+
+```
+bonus/
+    code/
+        ShilalNFT42Onchain.sol
+    website/
+        mint.html
+    documentation/
+        bonus_notes.md
+```
+
+---
+
 ## Choices made
 
 ### Separate contract — `ShilalNFT42Onchain.sol`
@@ -54,32 +83,3 @@ the site can be opened directly in a browser for the defense.
    valid JSON with an `image` field that itself decodes to a renderable SVG.
 4. Open `mint.html`, paste in the deployed contract address, connect the same wallet, and
    confirm the **Mint** and **Look Up** actions both work against the live contract.
-
----
-
-## Contract info
-
-| Field             | Value                              |
-|-------------------|--------------------------------------|
-| Collection name   | ShilalNFT42Onchain                   |
-| Symbol            | SNFT42B                              |
-| Standard          | ERC-721                              |
-| Network           | Ethereum Sepolia testnet             |
-| Contract address  | _fill in after deployment_           |
-| Artist / login    | shilal                               |
-| Image storage     | Fully on-chain (SVG, base64-encoded) |
-| Metadata storage  | Fully on-chain (JSON, base64-encoded)|
-
----
-
-## Repository structure (bonus)
-
-```
-bonus/
-    code/
-        ShilalNFT42Onchain.sol
-    website/
-        mint.html
-    documentation/
-        bonus_notes.md
-```

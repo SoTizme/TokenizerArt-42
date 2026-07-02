@@ -42,17 +42,3 @@ mint/
 documentation/
     whitepaper.md        ← NFT overview and architecture
 ```
-
----
-
-## Contract info
-
-| Field             | Value                              |
-|-------------------|--------------------------------------|
-| Collection name   | ShilalNFT42                          |
-| Symbol            | SNFT42                               |
-| Standard          | ERC-721                              |
-| Network           | Ethereum Sepolia testnet             |
-| Contract address  | 0xeD8D4EBA286049A9fcFDdfC817676624c63aaEAA  |
-| Artist / login    | shilal                               |
-| Image storage     | IPFS                                 |
