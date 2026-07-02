@@ -8,9 +8,6 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 
 /// @title ShilalNFT42Onchain - Bonus version of ShilalNFT42 with fully on-chain metadata + image
 /// @notice Image and metadata are generated and stored entirely on-chain as an SVG + base64 JSON.
-///         No IPFS or external link is used for this version. Built for the 42 TokenizeArt
-///         bonus part ("NFT Inscriptions"). Deployed on Sepolia testnet for educational
-///         purposes only, no real monetary value.
 contract ShilalNFT42Onchain is ERC721, Ownable {
     using Strings for uint256;
 
@@ -18,7 +15,6 @@ contract ShilalNFT42Onchain is ERC721, Ownable {
     uint256 private _nextTokenId;
 
     // Small accent palette so each token's artwork looks slightly different.
-    // Index is picked deterministically from the tokenId, no off-chain randomness needed.
     string[5] private _palette = [
         "#bcd9e8", // pale blue
         "#e8c8bc", // pale orange
@@ -30,8 +26,7 @@ contract ShilalNFT42Onchain is ERC721, Ownable {
     // Sets the NFT collection name, symbol, and the contract owner
     constructor() ERC721("ShilalNFT42Onchain", "SNFT42B") Ownable(msg.sender) {}
 
-    /// @notice Mint a new fully on-chain NFT. Same access control as the mandatory
-    ///         contract: only the deployer can mint.
+    /// @notice Mint a new fully on-chain NFT.
     /// @param to The wallet address that will receive the new NFT
     /// @return tokenId The unique ID assigned to the newly minted NFT
     function safeMint(address to) external onlyOwner returns (uint256) {
@@ -46,8 +41,7 @@ contract ShilalNFT42Onchain is ERC721, Ownable {
         return _nextTokenId;
     }
 
-    /// @notice Returns the fully on-chain metadata for a token as a base64-encoded
-    ///         data URI. No IPFS, no external server involved.
+    /// @notice Returns the fully on-chain metadata for a token as a base64-encoded data URI.
     function tokenURI(uint256 tokenId) public view override returns (string memory) {
         _requireOwned(tokenId);
 
@@ -76,9 +70,7 @@ contract ShilalNFT42Onchain is ERC721, Ownable {
         return _generateSVG(tokenId);
     }
 
-    // Builds a low-poly "42" emblem matching the look of the original artwork.
-    // Each token gets a slightly different layout and accent color derived
-    // deterministically from its tokenId, so no two renders are identical.
+    // Builds a low-poly "42" emblem.
     function _generateSVG(uint256 tokenId) internal view returns (string memory) {
         string memory accent = _accentColor(tokenId);
         string memory x1 = (40 + (tokenId % 30)).toString();

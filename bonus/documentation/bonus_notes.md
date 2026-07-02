@@ -20,33 +20,26 @@ Documentation for the bonus part of the **42 TokenizeArt** project: on-chain met
 
 ---
 
-## Repository structure (bonus)
+## Run locally
 
+```bash
+cd bonus/website
+python3 -m http.server 8080
 ```
-bonus/
-    code/
-        ShilalNFT42Onchain.sol
-    website/
-        mint.html
-    documentation/
-        bonus_notes.md
-```
+Then open `http://localhost:8080/mint.html`.
+
+> ⚠️ Always use `http://localhost` — opening via `file://` blocks MetaMask and the ethers.js library.
 
 ---
 
 ## Choices made
-
-### Separate contract — `ShilalNFT42Onchain.sol`
-The mandatory contract (`ShilalNFT42.sol`) is already deployed and graded, so it was left
-untouched. The bonus is implemented as a second, independent contract rather than a
-modification of the original, to avoid any risk of breaking the mandatory submission.
 
 ### Fully on-chain metadata — no IPFS
 Instead of `ERC721URIStorage` pointing to an external `tokenURI`, this version generates
 the JSON metadata and the image on the fly, directly inside the contract, and returns them
 as a `data:application/json;base64,...` URI. There is no dependency on IPFS, a pinning
 service, or any external link — anyone can read the full NFT (image included) straight
-from chain state. This satisfies the "NFT Inscriptions" bonus requirement.
+from chain state.
 
 ### SVG instead of a raster image
 The original PNG artwork was rebuilt as an SVG: a low-poly "42" emblem matching the same
@@ -81,5 +74,4 @@ the site can be opened directly in a browser for the defense.
 2. Call `safeMint(<address>)` from the owner wallet.
 3. Call `tokenURI(<tokenId>)` and decode the returned base64 string — it should contain
    valid JSON with an `image` field that itself decodes to a renderable SVG.
-4. Open `mint.html`, paste in the deployed contract address, connect the same wallet, and
-   confirm the **Mint** and **Look Up** actions both work against the live contract.
+4. After running the **Run locally**, paste in the deployed contract address, connect the same wallet, and confirm the **Mint** and **Look Up** actions both work against the live contract.

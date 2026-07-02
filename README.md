@@ -29,16 +29,23 @@ The NFT image and its metadata JSON file are stored on IPFS (InterPlanetary File
 ---
 
 ## Repository structure
+
 ```
 README.md
-shilal_nft42.png          ← original NFT image
 code/
-    ShilalNFT42.sol      ← smart contract source
+    ShilalNFT42.sol            ← mandatory smart contract
 deployment/
-    how_to_deploy.md     ← step-by-step deployment guide + contract address
+    how_to_deploy.md           ← step-by-step deployment guide
 mint/
-    metadata.json        ← final NFT metadata
-    mint_info.md         ← minting steps, IPFS links, minted token details
+    metadata.json              ← NFT metadata (uploaded to IPFS)
+    mint_info.md               ← minting steps, IPFS links, token details
 documentation/
-    whitepaper.md        ← NFT overview and architecture
+    whitepaper.md              ← NFT overview and architecture
+bonus/
+    code/
+        ShilalNFT42Onchain.sol ← fully on-chain NFT contract (bonus)
+    website/
+        mint.html              ← browser mint interface (bonus)
+    documentation/
+        bonus_notes.md         ← bonus design decisions
 ```
