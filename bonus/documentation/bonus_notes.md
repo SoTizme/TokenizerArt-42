@@ -1,77 +1,209 @@
-# ShilalNFT42 — Bonus Part
+# ShilalNFT42 — Bonus Documentation
 
-Documentation for the bonus part of the **42 TokenizeArt** project: on-chain metadata
-("Inscriptions"), a richer NFT image, and a minimal mint website with a graphical interface.
+This document describes the **bonus implementation** of **ShilalNFT42**, developed for the **42 TokenizeArt** project.
 
----
+Unlike the mandatory version, which stores NFT metadata and artwork on IPFS, this implementation stores both the metadata and the artwork entirely on-chain. It also includes a lightweight web interface for minting and viewing NFTs.
 
-## Contract info
-
-| Field             | Value                              |
-|-------------------|--------------------------------------|
-| Collection name   | ShilalNFT42Onchain                   |
-| Symbol            | SNFT42B                              |
-| Standard          | ERC-721                              |
-| Network           | Ethereum Sepolia testnet             |
-| Contract address  | 0xb9fFC94D4E517730d2Ae0312D41Cc2DFbDAd82F5           |
-| Artist / login    | shilal                               |
-| Image storage     | Fully on-chain (SVG, base64-encoded) |
-| Metadata storage  | Fully on-chain (JSON, base64-encoded)|
+> **Note**
+>
+> This document covers only the bonus implementation (`ShilalNFT42Onchain.sol`).
+>
+> The mandatory contract (`ShilalNFT42.sol`) and its deployment process are documented separately in `deployment/how_to_deploy.md`.
 
 ---
 
-## Run locally
+# Contract Information
+
+| Field            | Value                                        |
+| ---------------- | -------------------------------------------- |
+| Contract         | ShilalNFT42Onchain                           |
+| Symbol           | SNFT42B                                      |
+| Standard         | ERC-721                                      |
+| Network          | Ethereum Sepolia                             |
+| Contract Address | `0xb9fFC94D4E517730d2Ae0312D41Cc2DFbDAd82F5` |
+| Image Storage    | Fully On-Chain                               |
+| Metadata Storage | Fully On-Chain                               |
+
+---
+
+# Overview
+
+The bonus contract demonstrates an alternative approach to NFT storage.
+
+Instead of referencing external resources hosted on IPFS, the smart contract generates both the metadata and the artwork directly on-chain. Every NFT is therefore completely self-contained and can be reconstructed solely from blockchain data.
+
+The implementation also includes a browser-based minting application that interacts directly with the deployed contract using MetaMask and `ethers.js`.
+
+---
+
+# Architecture
+
+```text id="fjj70m"
+                User
+                  │
+                  ▼
+             mint.html
+                  │
+              ethers.js
+                  │
+                  ▼
+     ShilalNFT42Onchain.sol
+          │            │
+          │            │
+          ▼            ▼
+    Base64 JSON    Base64 SVG
+          │
+          ▼
+      tokenURI()
+```
+
+---
+
+# Design Decisions
+
+## Fully On-Chain Metadata
+
+The mandatory implementation stores a URI pointing to metadata hosted on IPFS.
+
+The bonus implementation removes this dependency entirely.
+
+The `tokenURI()` function dynamically generates a JSON document, encodes it using Base64, and returns it as a `data:application/json;base64,...` URI. No external storage or pinning service is required.
+
+---
+
+## Fully On-Chain Artwork
+
+Instead of storing a PNG image on IPFS, the artwork is generated as an SVG directly inside the smart contract.
+
+The SVG is then Base64 encoded and embedded into the metadata returned by `tokenURI()`.
+
+This approach guarantees that both the artwork and its metadata remain permanently available as long as the blockchain exists.
+
+---
+
+## SVG Instead of PNG
+
+SVG was selected because it is a text-based vector format.
+
+Compared to raster images such as PNG, SVG significantly reduces storage requirements while remaining fully supported by wallets, block explorers, and NFT marketplaces.
+
+This makes it a practical choice for on-chain NFTs.
+
+---
+
+## Deterministic NFT Variations
+
+Each NFT includes small visual differences generated from its `tokenId`.
+
+These variations include:
+
+* Accent color
+* Minor layout offsets
+
+Because they are derived deterministically from the token identifier, the same NFT will always render identically without requiring randomness or off-chain computation.
+
+---
+
+## Owner-Only Minting
+
+The contract uses OpenZeppelin's `Ownable` module.
+
+Only the contract owner can execute `safeMint()`, matching the security model used by the mandatory implementation.
+
+Ownership of every NFT can be verified using the standard ERC-721 functions such as `ownerOf()`.
+
+---
+
+# Mint Website
+
+The repository includes a lightweight browser application located at:
+
+```text id="zhmccm"
+bonus/website/mint.html
+```
+
+The website was intentionally designed without a build system or external framework.
+
+It consists of a single HTML file that loads `ethers.js` from a CDN and allows users to:
+
+* Connect MetaMask
+* Mint NFTs
+* Look up existing NFTs
+* Retrieve metadata directly from the deployed smart contract
+
+This minimalist approach satisfies the project requirements while making the application easy to demonstrate during evaluation.
+
+---
+
+# Running the Website
+
+From the project root:
 
 ```bash
 cd bonus/website
 python3 -m http.server 8080
 ```
-Then open `http://localhost:8080/mint.html`.
 
-> ⚠️ Always use `http://localhost` — opening via `file://` blocks MetaMask and the ethers.js library.
+Open your browser and navigate to:
 
----
+```text id="adkfto"
+http://localhost:8080/mint.html
+```
 
-## Choices made
-
-### Fully on-chain metadata — no IPFS
-Instead of `ERC721URIStorage` pointing to an external `tokenURI`, this version generates
-the JSON metadata and the image on the fly, directly inside the contract, and returns them
-as a `data:application/json;base64,...` URI. There is no dependency on IPFS, a pinning
-service, or any external link — anyone can read the full NFT (image included) straight
-from chain state.
-
-### SVG instead of a raster image
-The original PNG artwork was rebuilt as an SVG: a low-poly "42" emblem matching the same
-visual identity as the mandatory NFT. SVG was chosen over PNG because storing a raster
-image on-chain would make the contract far more expensive to deploy and read; an SVG is a
-compact text format that's cheap to store and still renders crisply in wallets, explorers,
-and marketplaces.
-
-### Per-token variation
-Each token's accent color and a small layout offset are derived deterministically from its
-`tokenId` (no off-chain randomness needed), so every mint looks slightly different while
-staying visually consistent with the collection.
-
-### Security — owner-only mint
-`safeMint` keeps the same `onlyOwner` restriction as the mandatory contract, so only the
-deployer can mint. This keeps the access-control story consistent across both contracts:
-new tokens are only ever created by the project owner, and ownership of an existing token
-can be confirmed by anyone via the standard `ownerOf` function.
-
-### Mint website — plain HTML/JS, no build step
-The mint website (`mint.html`) is a single self-contained file using `ethers.js` loaded
-from a CDN, with no framework, bundler, or `npm install` required. It was kept deliberately
-simple: connect a wallet, mint to an address, and look up an existing token by ID. This
-matches the project's "minimalist actions to demonstrate operation" requirement and means
-the site can be opened directly in a browser for the defense.
+> **Important**
+>
+> Always use `http://localhost` instead of opening the file directly with `file://`.
+>
+> Browsers block MetaMask and `ethers.js` interactions when local files are opened directly.
 
 ---
 
-## How to verify
+# Verifying the Bonus Contract
 
-1. Deploy `ShilalNFT42Onchain.sol` to Sepolia (Remix, same workflow as the mandatory part).
-2. Call `safeMint(<address>)` from the owner wallet.
-3. Call `tokenURI(<tokenId>)` and decode the returned base64 string — it should contain
-   valid JSON with an `image` field that itself decodes to a renderable SVG.
-4. After running the **Run locally**, paste in the deployed contract address, connect the same wallet, and confirm the **Mint** and **Look Up** actions both work against the live contract.
+After deployment:
+
+1. Connect the owner wallet to Remix.
+2. Call:
+
+```text id="n40xkp"
+safeMint(<recipient>)
+```
+
+3. Retrieve the generated metadata:
+
+```text id="rl7vko"
+tokenURI(<tokenId>)
+```
+
+The returned value should be a Base64-encoded JSON document.
+
+After decoding it, the JSON should contain an `image` field.
+
+The value of this field is itself a Base64-encoded SVG image representing the NFT artwork.
+
+---
+
+# Current Deployment
+
+| Item             | Value                                        |
+| ---------------- | -------------------------------------------- |
+| Network          | Ethereum Sepolia                             |
+| Contract Address | `0xb9fFC94D4E517730d2Ae0312D41Cc2DFbDAd82F5` |
+| Storage          | Fully On-Chain                               |
+| Metadata         | Generated dynamically by `tokenURI()`        |
+| Artwork          | Embedded Base64 SVG                          |
+
+---
+
+# Bonus Features Summary
+
+Compared to the mandatory implementation, this version provides:
+
+* Fully on-chain metadata generation
+* Fully on-chain SVG artwork
+* Dynamic `tokenURI()` implementation
+* Deterministic artwork variations
+* Browser-based minting interface
+* No dependency on IPFS or external storage
+
+These additions demonstrate how an ERC-721 NFT can remain entirely self-contained while still complying with the standard and remaining compatible with existing wallets and blockchain explorers.

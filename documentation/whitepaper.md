@@ -1,106 +1,152 @@
-# ShilalNFT42 (SNFT42) — Documentation
+# ShilalNFT42 (SNFT42) — Whitepaper
 
 ## Overview
 
-**ShilalNFT42** is a non-fungible token (NFT) created as part of the 42 TokenizeArt project. It follows the ERC-721 standard and represents a single, unique piece of digital artwork containing the number 42, deployed on the Ethereum Sepolia testnet for educational purposes.
+This document describes the technical architecture of **ShilalNFT42 (SNFT42)**, the mandatory ERC-721 implementation developed for the **42 TokenizeArt** project.
+
+The contract follows the ERC-721 standard and stores NFT metadata and artwork using **IPFS**, while leveraging audited OpenZeppelin contracts to provide ownership management, metadata support, and access control.
+
+For deployment instructions, refer to `deployment/how_to_deploy.md`.
+
+For the fully on-chain bonus implementation, refer to `bonus/documentation/bonus_notes.md`.
 
 ---
 
-## Contract info
+# Smart Contract Architecture
 
-| Field             | Value                              |
-|-------------------|--------------------------------------|
-| Collection name   | ShilalNFT42                          |
-| Symbol            | SNFT42                               |
-| Standard          | ERC-721                              |
-| Network           | Ethereum Sepolia testnet             |
-| Contract address  | 0xeD8D4EBA286049A9fcFDdfC817676624c63aaEAA  |
-| Artist / login    | shilal                               |
-| Image storage     | IPFS                                 |
+The contract is built by extending three OpenZeppelin contracts, each responsible for a specific aspect of the NFT implementation.
 
----
-
-## Smart contract architecture
-
-The contract inherits from three OpenZeppelin base contracts:
-
-### `ERC721`
-The core NFT standard, providing:
-- `ownerOf(tokenId)` — returns who owns a specific NFT
-- `balanceOf(address)` — how many NFTs an address owns
-- `transferFrom(from, to, tokenId)` — transfer a specific NFT
-
-### `ERC721URIStorage`
-Adds the ability to attach a unique metadata link (`tokenURI`) to each individual NFT, instead of all NFTs sharing the same metadata.
-
-### `Ownable`
-Restricts minting to the contract deployer (owner) only.
-
-### Custom function
-
-| Function | Access | Description |
-|---|---|---|
-| `safeMint(to, tokenURI)` | Owner only | Creates a new NFT, assigns it the next available ID, and links it to its metadata |
-
----
-
-## How metadata and images work
-
-```
-Smart contract (on-chain)
-      |
-      | tokenURI(0) returns →
-      ↓
-ipfs://<metadata-CID>
-      |
-      | metadata.json contains →
-      ↓
-{ "name": ..., "image": "ipfs://<image-CID>", "artist": "shilal" }
-      |
-      | image field points to →
-      ↓
-The actual NFT artwork file
+```text
+                   ShilalNFT42
+                        │
+        ┌───────────────┼───────────────┐
+        │               │               │
+        ▼               ▼               ▼
+     ERC721      ERC721URIStorage    Ownable
+        │               │               │
+        └───────────────┴───────────────┘
+                        │
+                        ▼
+               safeMint(to, uri)
 ```
 
-The blockchain only stores a small link (`tokenURI`). The actual image and JSON file live on IPFS — a distributed, decentralized storage network. This keeps the blockchain lightweight while still making the artwork permanently retrievable.
+---
+
+## ERC721
+
+`ERC721` provides the core NFT functionality defined by the ERC-721 standard.
+
+Its responsibilities include:
+
+* Tracking NFT ownership.
+* Managing token transfers.
+* Maintaining balances for each owner.
+* Providing the standard ERC-721 interface recognized by wallets and marketplaces.
 
 ---
 
-## How to use the NFT
+## ERC721URIStorage
 
-### Add Sepolia + your wallet
-Same MetaMask setup as the previous Tokenizer project — Sepolia testnet, funded with free test ETH.
+`ERC721URIStorage` extends the base ERC-721 implementation by allowing each token to reference its own metadata through a unique `tokenURI`.
 
-### View your NFT
-1. Go to `sepolia.etherscan.io`, search the contract address
-2. Click the **Token Transfers (ERC-721)** or **NFT** tab
-3. Your minted NFT will be listed with its token ID
+Rather than storing metadata directly on the blockchain, the contract stores a URI pointing to a JSON document hosted on IPFS.
 
-### Confirm ownership
-In Remix, call:
+This approach significantly reduces on-chain storage while keeping NFT metadata decentralized.
+
+---
+
+## Ownable
+
+`Ownable` provides a simple access-control mechanism.
+
+Only the contract owner is authorized to mint new NFTs through the custom `safeMint()` function.
+
+This prevents unauthorized token creation while leaving ownership transfers fully compliant with the ERC-721 standard.
+
+---
+
+# Contract Functions
+
+The contract introduces one custom function while inheriting the standard ERC-721 interface.
+
+| Function                           | Purpose                                                    |
+| ---------------------------------- | ---------------------------------------------------------- |
+| `safeMint(address to, string uri)` | Creates a new NFT and associates it with its metadata URI. |
+| `ownerOf(tokenId)`                 | Returns the owner of a specific NFT.                       |
+| `balanceOf(owner)`                 | Returns the number of NFTs owned by an address.            |
+| `tokenURI(tokenId)`                | Returns the metadata URI associated with a token.          |
+| `transferFrom(from, to, tokenId)`  | Transfers ownership of an NFT.                             |
+
+---
+
+# Metadata Architecture
+
+The mandatory implementation stores metadata and artwork using IPFS.
+
+The smart contract stores only a metadata URI.
+
+```text
+Smart Contract
+       │
+       ▼
+tokenURI(tokenId)
+       │
+       ▼
+ipfs://metadata.json
+       │
+       ▼
+Metadata
+ ├── name
+ ├── description
+ ├── attributes
+ └── image
+         │
+         ▼
+ ipfs://image.png
 ```
-ownerOf(0)
-```
-This returns the wallet address that currently owns token ID 0.
 
-### View the artwork
-Take the `tokenURI` result, replace `ipfs://` with `https://gateway.pinata.cloud/ipfs/` and open it in a browser to see the metadata JSON, which links to the actual image.
+When an application requests an NFT, it first retrieves the metadata URI from the smart contract. The metadata JSON is then loaded from IPFS, where it provides information about the NFT and the location of the associated artwork.
+
+This separation keeps the smart contract lightweight while preserving decentralized storage for both metadata and images.
 
 ---
 
-## Security model
+# Security Model
 
-- **Mint control**: only the owner can create new NFTs.
-- **Unique IDs**: a counter (`_nextTokenId`) guarantees no duplicate token IDs.
-- **Ownership transfer**: any NFT owner (not just the contract owner) can transfer their own NFT using `transferFrom`.
-- **No real funds**: contract lives on Sepolia testnet only.
+## Controlled Minting
+
+Only the contract owner can create new NFTs through the `safeMint()` function.
+
+This restriction ensures that every NFT in the collection is intentionally issued by the project owner.
 
 ---
 
-## Dependencies
+## Unique Token Identifiers
 
-- Solidity `^0.8.34`
-- OpenZeppelin Contracts `v5.x`
-  - `@openzeppelin/contracts/token/ERC721/ERC721.sol`
-  - `@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol`
-  - `@openzeppelin/contracts/access/Ownable.sol`
+Each newly minted NFT receives a unique token identifier generated from an incrementing counter.
+
+This guarantees that no two NFTs share the same identifier.
+
+---
+
+## Ownership
+
+Ownership is managed entirely by the ERC-721 implementation.
+
+Once minted, NFTs can be transferred between users using the standard transfer functions provided by the protocol.
+
+---
+
+## Decentralized Metadata
+
+Although metadata is stored off-chain, it resides on IPFS rather than a traditional centralized server.
+
+This improves resilience and avoids dependence on a single hosting provider.
+
+---
+
+# Conclusion
+
+The mandatory implementation of **ShilalNFT42** demonstrates a clean and standards-compliant ERC-721 architecture.
+
+By combining OpenZeppelin's audited contracts with decentralized IPFS storage, the project separates blockchain logic from asset storage while remaining fully compatible with the Ethereum ecosystem. This design provides a secure, lightweight, and maintainable foundation for NFT development.
