@@ -140,15 +140,22 @@ This minimalist approach satisfies the project requirements while making the app
 From the project root:
 
 ```bash
-cd bonus/website
-python3 -m http.server 8080
+./bonus/run.sh
 ```
 
-Open your browser and navigate to:
+Then open:
 
-```text id="adkfto"
+```
 http://localhost:8080/mint.html
 ```
+
+The script starts a local Python HTTP server in the `bonus/website` directory.
+
+> **Note:** If the script is not executable, run:
+>
+> ```bash
+> chmod +x bonus/run.sh
+> ```
 
 > **Important**
 >
